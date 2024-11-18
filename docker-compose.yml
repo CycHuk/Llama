@@ -1,0 +1,30 @@
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - "15672:15672"  
+      - "5672:5672"  
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest1
+      - RABBITMQ_DEFAULT_PASS=guest1
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  # llama_server:
+  #   build:
+  #     context: .
+  #     dockerfile: llama_server/Dockerfile
+  #   environment:
+  #     - RABBITMQ_HOST=localhost
+  #     - RABBITMQ_PORT=5672
+  #     - RABBITMQ_USER=guest1
+  #     - RABBITMQ_PASSWORD=guest1
+  #   runtime: nvidia
+  #   volumes:
+  #     - .:/app
+  #   command: ["python", "worker.py"]
+
+volumes:
+  rabbitmq_data:
+    driver: local
