@@ -8,13 +8,13 @@ RUN apt-get update && apt-get upgrade -y \
     libclblast-dev libopenblas-dev \
     && mkdir -p /etc/OpenCL/vendors && echo "libnvidia-opencl.so.1" > /etc/OpenCL/vendors/nvidia.icd
 
-COPY . .
 
 ENV CUDA_DOCKER_ARCH=all
 ENV GGML_CUDA=1
-
+RUN CMAKE_ARGS="-DGGML_CUDA=on" pip install llama-cpp-python
 RUN python3 -m pip install --upgrade pip pytest cmake scikit-build setuptools sse-starlette pydantic-settings starlette-context python-dotenv pika
 
-RUN CMAKE_ARGS="-DGGML_CUDA=on" pip install llama-cpp-python
+COPY . .
+RUN which python3
 
-CMD ["python", "worker.py"]
+ENTRYPOINT python3 worker.py
