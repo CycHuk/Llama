@@ -4,9 +4,14 @@ import json
 from llama_cpp import Llama
 from dotenv import load_dotenv
 
+load_dotenv()
+
+ngl = int(os.getenv('ngl', '-1'))
+
 llm = Llama(
     model_path="models/Meta-Llama-3.1-8B-Instruct-IQ2_M.gguf",
     chat_format="llama-3",
+    n_gpu_layers=ngl,
     verbose=False
 )
 
@@ -64,8 +69,6 @@ def on_request(ch, method, properties, body):
         )
     finally:
         ch.basic_ack(delivery_tag=method.delivery_tag)
-
-load_dotenv()
 
 host = os.getenv('RABBITMQ_HOST', 'localhost')  
 port = int(os.getenv('RABBITMQ_PORT', 5672))   
