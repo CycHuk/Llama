@@ -1,0 +1,4 @@
+mysql-data
+ollama
+model_files/*.gguf
+backend/node_modules
