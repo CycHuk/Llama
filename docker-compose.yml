@@ -11,7 +11,7 @@ services:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: SiteUsers
+      MYSQL_DATABASE: db
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     networks:
       - mysql
@@ -34,12 +34,32 @@ services:
     container_name: ollama
     ports:
       - "11434:11434"
-      - "58360:58360"
     environment:
       OLLAMA_KEEP_ALIVE: -1
     volumes:
       - ./ollama:/root/.ollama
     restart: always
+    networks:
+      - mysql
+
+  backend:
+    build:
+      context: ./
+    environment:
+      PORT: 4000
+      LLAMA_HOST: ollama:11434
+      LLAMA_MODEL: llama3.1
+      MYSQL_HOST: db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: db
+    ports:
+      - "4000:4000"
+    depends_on:
+      - db
+      - ollama
+    networks:
+      - mysql
 
 networks:
   mysql:
